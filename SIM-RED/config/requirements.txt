@@ -1,0 +1,32 @@
+# SIM-RED EXTENDIDO - Required Tools
+# This file lists all external tools required by the system
+# Format: one tool per line
+# Lines starting with # are comments
+
+# Network scanning tools
+arp-scan
+nmap
+
+# Network monitoring tools
+ifstat
+ping
+ip
+
+# Text processing tools
+gawk
+grep
+sed
+
+# System utilities
+bc
+sha256sum
+date
+
+# Perl (for HTML report generation)
+perl
+
+# Optional but recommended
+netstat
+ss
+dig
+host
