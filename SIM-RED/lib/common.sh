@@ -155,6 +155,136 @@ validate_mac() {
     return 1
 }
 
+# Auto-detect active network interface
+detect_network_interface() {
+    # Try to find the default route interface
+    local iface=$(ip route | grep default | awk '{print $5}' | head -n 1)
+    
+    # If no default route, try to find first active interface (excluding loopback)
+    if [[ -z "$iface" ]]; then
+        iface=$(ip link show | grep -E "^[0-9]+: (eth|enp|wlan|wlp)" | head -n 1 | awk -F': ' '{print $2}')
+    fi
+    
+    echo "$iface"
+}
+
+# Auto-detect network subnet
+detect_network_subnet() {
+    local iface="${1:-$(detect_network_interface)}"
+    
+    if [[ -z "$iface" ]]; then
+        return 1
+    fi
+    
+    # Get IP and CIDR from interface
+    local subnet=$(ip -4 addr show "$iface" 2>/dev/null | grep inet | awk '{print $2}' | head -n 1)
+    
+    if [[ -z "$subnet" ]]; then
+        return 1
+    fi
+    
+    # Extract network address from IP/CIDR
+    local ip=$(echo "$subnet" | cut -d'/' -f1)
+    local cidr=$(echo "$subnet" | cut -d'/' -f2)
+    
+    # Calculate network address
+    local network=$(ipcalc -n "$ip/$cidr" 2>/dev/null | grep Network | awk '{print $2}')
+    
+    # Fallback if ipcalc is not available
+    if [[ -z "$network" ]]; then
+        # Simple calculation for /24 networks
+        if [[ "$cidr" == "24" ]]; then
+            network=$(echo "$ip" | awk -F. '{print $1"."$2"."$3".0/24"}')
+        else
+            # For other CIDR, just use the IP with CIDR
+            network="$ip/$cidr"
+        fi
+    fi
+    
+    echo "$network"
+}
+
+# Get current network gateway
+detect_network_gateway() {
+    local gateway=$(ip route | grep default | awk '{print $3}' | head -n 1)
+    echo "$gateway"
+}
+
+# Auto-detect and display network configuration
+auto_detect_network() {
+    local show_output="${1:-yes}"
+    
+    local iface=$(detect_network_interface)
+    local subnet=$(detect_network_subnet "$iface")
+    local gateway=$(detect_network_gateway)
+    local my_ip=$(hostname -I | awk '{print $1}')
+    
+    if [[ "$show_output" == "yes" ]]; then
+        print_header "Auto-Detección de Red"
+        echo ""
+        print_info "Interfaz de red detectada: ${CYAN}$iface${NC}"
+        print_info "Tu dirección IP: ${CYAN}$my_ip${NC}"
+        print_info "Gateway (Router): ${CYAN}$gateway${NC}"
+        print_info "Rango de red (Subnet): ${CYAN}$subnet${NC}"
+        echo ""
+    fi
+    
+    # Export variables for use in scripts
+    export DETECTED_INTERFACE="$iface"
+    export DETECTED_SUBNET="$subnet"
+    export DETECTED_GATEWAY="$gateway"
+    export DETECTED_IP="$my_ip"
+    
+    # Update config if different from current
+    if [[ -n "$subnet" && "$subnet" != "$SUBNET" ]]; then
+        if [[ "$show_output" == "yes" ]]; then
+            print_warning "La configuración actual ($SUBNET) difiere de la red detectada ($subnet)"
+            
+            if ask_yes_no "¿Deseas actualizar la configuración automáticamente?" "y"; then
+                update_network_config "$iface" "$subnet"
+            fi
+        fi
+    fi
+    
+    return 0
+}
+
+# Update network configuration in config.conf
+update_network_config() {
+    local new_iface="$1"
+    local new_subnet="$2"
+    
+    if [[ ! -f "$CONFIG_FILE" ]]; then
+        print_error "Archivo de configuración no encontrado: $CONFIG_FILE"
+        return 1
+    fi
+    
+    # Backup config file
+    cp "$CONFIG_FILE" "${CONFIG_FILE}.bak"
+    
+    # Update SUBNET
+    if grep -q "^SUBNET=" "$CONFIG_FILE"; then
+        sed -i "s|^SUBNET=.*|SUBNET=\"$new_subnet\"|" "$CONFIG_FILE"
+    else
+        echo "SUBNET=\"$new_subnet\"" >> "$CONFIG_FILE"
+    fi
+    
+    # Update NETWORK_INTERFACE
+    if grep -q "^NETWORK_INTERFACE=" "$CONFIG_FILE"; then
+        sed -i "s|^NETWORK_INTERFACE=.*|NETWORK_INTERFACE=\"$new_iface\"|" "$CONFIG_FILE"
+    else
+        echo "NETWORK_INTERFACE=\"$new_iface\"" >> "$CONFIG_FILE"
+    fi
+    
+    print_success "Configuración actualizada correctamente"
+    print_info "Backup guardado en: ${CONFIG_FILE}.bak"
+    
+    # Reload configuration
+    source "$CONFIG_FILE"
+    
+    return 0
+}
+
 # Press any key to continue
 press_any_key() {
     echo ""
@@ -259,3 +389,8 @@ export -f print_separator
 export -f command_exists
 export -f validate_ip
 export -f validate_mac
+export -f detect_network_interface
+export -f detect_network_subnet
+export -f detect_network_gateway
+export -f auto_detect_network
+export -f update_network_config

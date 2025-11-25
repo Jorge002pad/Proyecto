@@ -104,6 +104,9 @@ show_menu() {
 check_initial_requirements() {
     local req_script="${SCRIPT_DIR}/bin/check_requirements.sh"
     
+    # Auto-detect network configuration
+    auto_detect_network "yes"
+    
     if [[ -f "$req_script" ]]; then
         # Run requirements check
         bash "$req_script"
