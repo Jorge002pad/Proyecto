@@ -441,6 +441,12 @@ HTML
     
     foreach my $line (@$data) {
         my ($host, $min, $avg, $max, $status) = split(/\|/, $line);
+        
+        # Ensure numeric values for comparison (avoid "max" string errors)
+        $min = ($min =~ /^\d+\.?\d*$/) ? $min : 0;
+        $avg = ($avg =~ /^\d+\.?\d*$/) ? $avg : 0;
+        $max = ($max =~ /^\d+\.?\d*$/) ? $max : 0;
+        
         my $status_class = $avg < 50 ? 'status-ok' : 
                           $avg < 100 ? 'status-warning' : 'status-error';
         
