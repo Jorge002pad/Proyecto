@@ -1,6 +1,6 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - VPN/Proxy Detection Script
-# Feature 3: Detect if users are using VPN or Proxy
+# SIM-RED EXTENDIDO - Script de Detección de VPN/Proxy
+# Función 3: Detectar si los usuarios están usando VPN o Proxy
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -8,19 +8,19 @@ source "${SCRIPT_DIR}/lib/network_utils.sh"
 
 LOG_FILE="${SCRIPT_DIR}/logs/vpn.log"
 
-# Main function
+# Función principal
 main() {
     print_header "Detección de VPN/Proxy"
     
-    # Check required tools
+    # Verificar herramientas requeridas
     if ! check_required_tools ping nmap gawk; then
         return 1
     fi
     
-    # Initialize log
+    # Inicializar log
     init_log "$LOG_FILE"
     
-    # Load authorized hosts
+    # Cargar hosts autorizados
     local hosts_file="${SCRIPT_DIR}/config/hosts.conf"
     if ! check_file "$hosts_file"; then
         return 1
@@ -33,7 +33,7 @@ main() {
     printf "%-15s %-15s %-40s %s\n" "IP" "Hostname" "Indicadores" "Probabilidad"
     print_separator
     
-    # Analyze each authorized host
+    # Analizar cada host autorizado
     while IFS='|' read -r ip mac hostname desc; do
         analyze_host_for_vpn "$ip" "$hostname"
     done < <(load_authorized_hosts "$hosts_file")
@@ -44,21 +44,21 @@ main() {
     press_any_key
 }
 
-# Analyze a host for VPN/Proxy indicators
+# Analizar un host para indicadores de VPN/Proxy
 analyze_host_for_vpn() {
     local ip="$1"
     local hostname="$2"
     local indicators=()
     local score=0
     
-    # Test 1: Check TTL variations
+    # Prueba 1: Verificar variaciones de TTL
     local ttl=$(get_ttl "$ip")
     
     if [[ -n "$ttl" ]]; then
-        # Normal TTLs: 64 (Linux), 128 (Windows), 255 (Network devices)
-        # VPN might show unusual TTLs or variations
+        # TTLs normales: 64 (Linux), 128 (Windows), 255 (Dispositivos de red)
+        # VPN podría mostrar TTLs inusuales o variaciones
         
-        # Store TTL history
+        # Almacenar historial de TTL
         local ttl_history_file="${SCRIPT_DIR}/data/ttl_history_${ip}.dat"
         ensure_dir "${SCRIPT_DIR}/data"
         
@@ -74,17 +74,17 @@ analyze_host_for_vpn() {
             fi
         fi
         
-        # Store current TTL
+        # Almacenar TTL actual
         echo "$(date +%s)|$ttl" >> "$ttl_history_file"
         
-        # Check for unusual TTL values
+        # Verificar valores de TTL inusuales
         if [[ $ttl -lt 50 ]] || [[ $ttl -gt 130 && $ttl -lt 250 ]]; then
             indicators+=("UNUSUAL_TTL")
             ((score += 20))
         fi
     fi
     
-    # Test 2: Check latency variations
+    # Prueba 2: Verificar variaciones de latencia
     local latency_data=$(ping_host "$ip" 4)
     
     if [[ -n "$latency_data" ]]; then
@@ -93,7 +93,7 @@ analyze_host_for_vpn() {
         local max_lat=$(echo "$latency_data" | cut -d'|' -f3)
         local mdev=$(echo "$latency_data" | cut -d'|' -f4)
         
-        # High deviation might indicate VPN
+        # Alta desviación podría indicar VPN
         local deviation_check=$(echo "$mdev $avg_lat" | awk '{if ($1 > $2 * 0.5) print "HIGH"}')
         
         if [[ "$deviation_check" == "HIGH" ]]; then
@@ -101,7 +101,7 @@ analyze_host_for_vpn() {
             ((score += 25))
         fi
         
-        # Very high latency might indicate VPN
+        # Latencia muy alta podría indicar VPN
         local high_latency=$(echo "$avg_lat" | awk '{if ($1 > 100) print "HIGH"}')
         if [[ "$high_latency" == "HIGH" ]]; then
             indicators+=("HIGH_LATENCY")
@@ -109,7 +109,7 @@ analyze_host_for_vpn() {
         fi
     fi
     
-    # Test 3: Check for VPN ports
+    # Prueba 3: Verificar puertos VPN
     if command_exists nmap; then
         local vpn_ports="${VPN_PORTS:-1194,500,4500,1723}"
         local open_vpn_ports=$(nmap -p "$vpn_ports" -T4 --open "$ip" 2>/dev/null | \
@@ -121,7 +121,7 @@ analyze_host_for_vpn() {
         fi
     fi
     
-    # Calculate probability
+    # Calcular probabilidad
     local probability="BAJA"
     local color="$GREEN"
     
@@ -133,21 +133,21 @@ analyze_host_for_vpn() {
         color="$YELLOW"
     fi
     
-    # Format indicators
+    # Formatear indicadores
     local indicators_str="${indicators[*]}"
     if [[ -z "$indicators_str" ]]; then
         indicators_str="Ninguno"
     fi
     
-    # Print result
+    # Imprimir resultado
     printf "%-15s %-15s %-40s " "$ip" "$hostname" "${indicators_str// /, }"
     print_color "$color" "$probability ($score%)"
     
-    # Log if probability is medium or high
+    # Registrar si la probabilidad es media o alta
     if [[ $score -ge 30 ]]; then
         log_message "WARNING" "Possible VPN/Proxy detected on $ip ($hostname): $indicators_str (score: $score)" "$LOG_FILE"
     fi
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

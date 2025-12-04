@@ -1,6 +1,6 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - Configuration Script
-# Feature 14: System configuration management
+# SIM-RED EXTENDIDO - Script de Configuración
+# Función 14: Gestión de configuración del sistema
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -10,7 +10,7 @@ CONFIG_FILE="${SCRIPT_DIR}/config/config.conf"
 HOSTS_FILE="${SCRIPT_DIR}/config/hosts.conf"
 SCHEDULE_FILE="${SCRIPT_DIR}/config/schedule.conf"
 
-# Main function
+# Función principal
 main() {
     while true; do
         print_header "Configuración del Sistema"
@@ -37,7 +37,7 @@ main() {
     done
 }
 
-# Configure subnet
+# Configurar subred
 configure_subnet() {
     print_header "Configurar Subred"
     
@@ -54,7 +54,7 @@ configure_subnet() {
         return
     fi
     
-    # Update config file
+    # Actualizar archivo de configuración
     sed -i "s|^SUBNET=.*|SUBNET=\"$new_subnet\"|" "$CONFIG_FILE"
     
     print_success "✓ Subred actualizada a: $new_subnet"
@@ -62,7 +62,7 @@ configure_subnet() {
     press_any_key
 }
 
-# Configure monitoring intervals
+# Configurar intervalos de monitoreo
 configure_intervals() {
     print_header "Configurar Intervalos de Monitoreo"
     
@@ -110,7 +110,7 @@ configure_intervals() {
     press_any_key
 }
 
-# Manage authorized hosts
+# Gestionar hosts autorizados
 manage_hosts() {
     while true; do
         print_header "Gestión de Hosts Autorizados"
@@ -133,7 +133,7 @@ manage_hosts() {
     done
 }
 
-# View hosts
+# Ver hosts
 view_hosts() {
     print_header "Hosts Autorizados"
     
@@ -150,7 +150,7 @@ view_hosts() {
     press_any_key
 }
 
-# Add host
+# Añadir host
 add_host() {
     print_header "Añadir Host Autorizado"
     
@@ -178,12 +178,12 @@ add_host() {
     echo -n "Descripción: "
     read -r desc
     
-    # Add to hosts file
+    # Agregar al archivo de hosts
     echo "$ip|$mac|$hostname|$desc" >> "$HOSTS_FILE"
     
     print_success "✓ Host añadido"
     
-    # Ask about schedule
+    # Preguntar sobre horario
     if ask_yes_no "¿Deseas configurar un horario para este host?" "y"; then
         echo -n "Días (ej: Mon-Fri, Mon-Sun): "
         read -r days
@@ -202,7 +202,7 @@ add_host() {
     press_any_key
 }
 
-# Remove host
+# Eliminar host
 remove_host() {
     print_header "Eliminar Host Autorizado"
     
@@ -215,17 +215,17 @@ remove_host() {
         return
     fi
     
-    # Show host info
+    # Mostrar información del host
     local host_info=$(grep "^${ip}|" "$HOSTS_FILE")
     echo ""
     print_info "Host a eliminar: $host_info"
     echo ""
     
     if ask_yes_no "¿Estás seguro?" "n"; then
-        # Remove from hosts file
+        # Eliminar del archivo de hosts
         sed -i "/^${ip}|/d" "$HOSTS_FILE"
         
-        # Remove from schedule file
+        # Eliminar del archivo de horarios
         sed -i "/^${ip}|/d" "$SCHEDULE_FILE"
         
         print_success "✓ Host eliminado"
@@ -236,7 +236,7 @@ remove_host() {
     press_any_key
 }
 
-# Configure thresholds
+# Configurar umbrales
 configure_thresholds() {
     print_header "Configurar Umbrales de Alerta"
     
@@ -284,7 +284,7 @@ configure_thresholds() {
     press_any_key
 }
 
-# View current configuration
+# Ver configuración actual
 view_config() {
     print_header "Configuración Actual"
     
@@ -295,5 +295,5 @@ view_config() {
     press_any_key
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

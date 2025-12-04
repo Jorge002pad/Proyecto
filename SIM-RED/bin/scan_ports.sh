@@ -1,6 +1,6 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - Port Scanning Script
-# Feature 9: Scan important ports on authorized hosts
+# SIM-RED EXTENDIDO - Script de Escaneo de Puertos
+# Función 9: Escanear puertos importantes en hosts autorizados
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -8,25 +8,25 @@ source "${SCRIPT_DIR}/lib/network_utils.sh"
 
 LOG_FILE="${SCRIPT_DIR}/logs/ports.log"
 
-# Main function
+# Función principal
 main() {
     print_header "Escaneo de Puertos Importantes"
     
-    # Check required tools
+    # Verificar herramientas requeridas
     if ! check_required_tools nmap; then
         return 1
     fi
     
-    # Initialize log
+    # Inicializar log
     init_log "$LOG_FILE"
     
-    # Load authorized hosts
+    # Cargar hosts autorizados
     local hosts_file="${SCRIPT_DIR}/config/hosts.conf"
     if ! check_file "$hosts_file"; then
         return 1
     fi
     
-    # Get ports to scan from config
+    # Obtener puertos a escanear desde configuración
     local ports="${PORTS_TO_SCAN:-22,80,443,3306,5432,8080}"
     local nmap_speed="${NMAP_SPEED:--T4}"
     
@@ -39,7 +39,7 @@ main() {
         "IP" "Hostname" "Puerto" "Servicio" "Estado"
     print_separator
     
-    # Scan each authorized host
+    # Escanear cada host autorizado
     while IFS='|' read -r ip mac hostname desc; do
         scan_host "$ip" "$hostname" "$ports" "$nmap_speed"
     done < <(load_authorized_hosts "$hosts_file")
@@ -50,14 +50,14 @@ main() {
     press_any_key
 }
 
-# Scan a single host
+# Escanear un host individual
 scan_host() {
     local ip="$1"
     local hostname="$2"
     local ports="$3"
     local speed="$4"
     
-    # Run nmap
+    # Ejecutar nmap
     local scan_result=$(nmap -p "$ports" $speed --open "$ip" 2>/dev/null | \
         grep -E "^[0-9]+/(tcp|udp)")
     
@@ -72,10 +72,10 @@ scan_host() {
             local port=$(echo "$line" | awk '{print $1}' | cut -d'/' -f1)
             local service=$(echo "$line" | awk '{print $3}')
             
-            # Determine if port is expected
+            # Determinar si el puerto es esperado
             local status="${GREEN}ESPERADO${NC}"
             
-            # Flag unexpected services
+            # Marcar servicios inesperados
             case "$service" in
                 ssh|http|https|mysql|postgresql)
                     status="${GREEN}ESPERADO${NC}"
@@ -99,5 +99,5 @@ scan_host() {
     fi
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

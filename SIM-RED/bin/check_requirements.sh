@@ -1,6 +1,6 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - Tool Verification Script
-# Feature 15: Check and install required tools
+# SIM-RED EXTENDIDO - Script de Verificación de Herramientas
+# Función 15: Verificar e instalar herramientas requeridas
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -9,7 +9,7 @@ REQUIREMENTS_FILE="${SCRIPT_DIR}/config/requirements.txt"
 MISSING_TOOLS=()
 INSTALLED_TOOLS=()
 
-# Main function
+# Función principal
 main() {
     print_header "Verificación de Herramientas Requeridas"
     
@@ -18,10 +18,10 @@ main() {
         return 1
     fi
     
-    # Read required tools
+    # Leer herramientas requeridas
     local tools=()
     while IFS= read -r line; do
-        # Skip comments and empty lines
+        # Saltar comentarios y líneas vacías
         [[ "$line" =~ ^#.*$ ]] && continue
         [[ -z "$line" ]] && continue
         
@@ -31,32 +31,32 @@ main() {
     print_info "Verificando ${#tools[@]} herramientas..."
     echo ""
     
-    # Check each tool
+    # Verificar cada herramienta
     for tool in "${tools[@]}"; do
         check_tool "$tool"
     done
     
-    # Summary
+    # Resumen
     print_separator
     echo ""
     print_info "Herramientas instaladas: ${GREEN}${#INSTALLED_TOOLS[@]}${NC}"
     print_info "Herramientas faltantes: ${RED}${#MISSING_TOOLS[@]}${NC}"
     echo ""
     
-    # If all tools are installed
+    # Si todas las herramientas están instaladas
     if [[ ${#MISSING_TOOLS[@]} -eq 0 ]]; then
         print_success "✓ Todo listo para iniciar"
         return 0
     fi
     
-    # Offer to install missing tools
+    # Ofrecer instalar herramientas faltantes
     print_warning "Faltan ${#MISSING_TOOLS[@]} herramientas:"
     for tool in "${MISSING_TOOLS[@]}"; do
         echo "  - $tool"
     done
     echo ""
     
-    # Ask to install
+    # Preguntar si instalar
     if ask_yes_no "¿Deseas instalar las herramientas faltantes?" "y"; then
         install_missing_tools
     else
@@ -65,7 +65,7 @@ main() {
     fi
 }
 
-# Check if a tool is installed
+# Verificar si una herramienta está instalada
 check_tool() {
     local tool="$1"
     
@@ -82,17 +82,17 @@ check_tool() {
     fi
 }
 
-# Install missing tools
+# Instalar herramientas faltantes
 install_missing_tools() {
     print_header "Instalación de Herramientas"
     
-    # Check if running as root
+    # Verificar si se ejecuta como root
     if [[ $EUID -ne 0 ]]; then
         print_warning "Se requieren permisos de root para instalar paquetes"
         print_info "Intentando usar sudo..."
     fi
     
-    # Update package list
+    # Actualizar lista de paquetes
     print_info "Actualizando lista de paquetes..."
     if [[ $EUID -eq 0 ]]; then
         apt-get update -qq
@@ -100,18 +100,18 @@ install_missing_tools() {
         sudo apt-get update -qq
     fi
     
-    # Install each missing tool
+    # Instalar cada herramienta faltante
     for tool in "${MISSING_TOOLS[@]}"; do
         install_tool "$tool"
     done
     
-    # Re-verify
+    # Re-verificar
     echo ""
     print_info "Verificando instalación..."
     MISSING_TOOLS=()
     INSTALLED_TOOLS=()
     
-    # Read tools again
+    # Leer herramientas nuevamente
     local tools=()
     while IFS= read -r line; do
         [[ "$line" =~ ^#.*$ ]] && continue
@@ -119,7 +119,7 @@ install_missing_tools() {
         tools+=("$line")
     done < "$REQUIREMENTS_FILE"
     
-    # Check again
+    # Verificar nuevamente
     for tool in "${tools[@]}"; do
         if command_exists "$tool"; then
             INSTALLED_TOOLS+=("$tool")
@@ -141,12 +141,12 @@ install_missing_tools() {
     fi
 }
 
-# Install a specific tool
+# Instalar una herramienta específica
 install_tool() {
     local tool="$1"
     local package=""
     
-    # Map tool names to package names
+    # Mapear nombres de herramientas a nombres de paquetes
     case "$tool" in
         arp-scan)
             package="arp-scan"
@@ -179,7 +179,7 @@ install_tool() {
             package="iproute2"
             ;;
         ping|grep|sed|date|sha256sum)
-            # These are usually pre-installed
+            # Estos usualmente vienen preinstalados
             package="coreutils"
             ;;
         *)
@@ -202,6 +202,6 @@ install_tool() {
     fi
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"
 exit $?

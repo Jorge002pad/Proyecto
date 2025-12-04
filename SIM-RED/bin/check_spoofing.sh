@@ -1,6 +1,6 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - Anti-Spoofing Detection Script
-# Feature 2: Detect IP/MAC spoofing attempts
+# SIM-RED EXTENDIDO - Script de Detección Anti-Spoofing
+# Función 2: Detectar intentos de suplantación de IP/MAC
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -8,19 +8,19 @@ source "${SCRIPT_DIR}/lib/network_utils.sh"
 
 LOG_FILE="${SCRIPT_DIR}/logs/spoofing.log"
 
-# Main function
+# Función principal
 main() {
     print_header "Verificación de Suplantación de IP/MAC (Anti-Spoofing)"
     
-    # Check required tools
+    # Verificar herramientas requeridas
     if ! check_required_tools gawk; then
         return 1
     fi
     
-    # Initialize log
+    # Inicializar log
     init_log "$LOG_FILE"
     
-    # Get ARP table
+    # Obtener tabla ARP
     print_info "Analizando tabla ARP..."
     local arp_data=$(get_arp_table)
     
@@ -32,7 +32,7 @@ main() {
     echo ""
     local issues_found=false
     
-    # Check for same IP with multiple MACs
+    # Verificar misma IP con múltiples MACs
     print_separator
     print_color "$CYAN" "Verificando: Misma IP con múltiples MACs"
     print_separator
@@ -45,7 +45,7 @@ main() {
     END {
         for (ip in ip_mac) {
             split(ip_mac[ip], macs, ",")
-            # Count unique MACs
+            # Contar MACs únicas
             delete unique
             for (i in macs) {
                 unique[macs[i]] = 1
@@ -73,7 +73,7 @@ main() {
         print_success "✓ No se detectaron IPs con múltiples MACs"
     fi
     
-    # Check for same MAC with multiple IPs
+    # Verificar misma MAC con múltiples IPs
     echo ""
     print_separator
     print_color "$CYAN" "Verificando: Misma MAC con múltiples IPs"
@@ -87,7 +87,7 @@ main() {
     END {
         for (mac in mac_ip) {
             split(mac_ip[mac], ips, ",")
-            # Count unique IPs
+            # Contar IPs únicas
             delete unique
             for (i in ips) {
                 unique[ips[i]] = 1
@@ -115,7 +115,7 @@ main() {
         print_success "✓ No se detectaron MACs con múltiples IPs"
     fi
     
-    # Check for MAC changes for known IPs
+    # Verificar cambios de MAC en IPs conocidas
     echo ""
     print_separator
     print_color "$CYAN" "Verificando: Cambios de MAC en IPs conocidas"
@@ -126,11 +126,11 @@ main() {
     ensure_dir "${SCRIPT_DIR}/data"
     
     if [[ -f "$history_file" ]]; then
-        # Compare with historical data
+        # Comparar con datos históricos
         local changes_detected=false
         
         while IFS='|' read -r current_ip current_mac; do
-            # Check if this IP existed before
+            # Verificar si esta IP existía antes
             local old_mac=$(grep "^${current_ip}|" "$history_file" 2>/dev/null | cut -d'|' -f2 | tail -1)
             
             if [[ -n "$old_mac" ]] && [[ "${old_mac,,}" != "${current_mac,,}" ]]; then
@@ -151,10 +151,10 @@ main() {
         print_info "Primera ejecución - creando historial de ARP"
     fi
     
-    # Update history
+    # Actualizar historial
     echo "$arp_data" > "$history_file"
     
-    # Summary
+    # Resumen
     echo ""
     print_separator
     if [[ "$issues_found" == true ]]; then
@@ -169,5 +169,5 @@ main() {
     press_any_key
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

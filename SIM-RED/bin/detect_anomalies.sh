@@ -1,22 +1,22 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - Network Anomaly Detection Script
-# Feature 11: Detect network anomalies using statistical analysis
+# SIM-RED EXTENDIDO - Script de Detección de Anomalías de Red
+# Función 11: Detectar anomalías de red usando análisis estadístico
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
 
 LOG_FILE="${SCRIPT_DIR}/logs/anomalies.log"
 
-# Main function
+# Función principal
 main() {
     print_header "Detección de Anomalías de Red"
     
-    # Check required tools
+    # Verificar herramientas requeridas
     if ! check_required_tools gawk bc; then
         return 1
     fi
     
-    # Initialize log
+    # Inicializar log
     init_log "$LOG_FILE"
     
     local anomaly_multiplier="${TRAFFIC_ANOMALY_MULTIPLIER:-2.0}"
@@ -27,7 +27,7 @@ main() {
     
     local anomalies_found=false
     
-    # Check latency anomalies
+    # Verificar anomalías de latencia
     print_separator
     print_color "$CYAN" "Análisis de Latencia"
     print_separator
@@ -44,7 +44,7 @@ main() {
         print_warning "No hay datos históricos de latencia"
     fi
     
-    # Check traffic anomalies
+    # Verificar anomalías de tráfico
     echo ""
     print_separator
     print_color "$CYAN" "Análisis de Tráfico"
@@ -62,7 +62,7 @@ main() {
         print_warning "No hay datos históricos de tráfico"
     fi
     
-    # Summary
+    # Resumen
     echo ""
     print_separator
     
@@ -79,12 +79,12 @@ main() {
     press_any_key
 }
 
-# Check latency anomalies
+# Verificar anomalías de latencia
 check_latency_anomalies() {
     local history_file="$1"
     local multiplier="$2"
     
-    # Calculate historical average (last 30 entries, excluding most recent)
+    # Calcular promedio histórico (últimas 30 entradas, excluyendo la más reciente)
     local stats=$(tail -31 "$history_file" | head -30 | awk -F'|' '
     {
         sum += $2
@@ -104,10 +104,10 @@ check_latency_anomalies() {
     
     local historical_avg="$stats"
     
-    # Get current latency (most recent entry)
+    # Obtener latencia actual (entrada más reciente)
     local current=$(tail -1 "$history_file" | cut -d'|' -f2)
     
-    # Compare
+    # Comparar
     local threshold=$(echo "$historical_avg * $multiplier" | bc)
     local is_anomaly=$(echo "$current > $threshold" | bc)
     
@@ -126,18 +126,18 @@ check_latency_anomalies() {
     fi
 }
 
-# Check traffic anomalies
+# Verificar anomalías de tráfico
 check_traffic_anomalies() {
     local history_file="$1"
     local multiplier="$2"
     
-    # Get unique interfaces
+    # Obtener interfaces únicas
     local interfaces=$(awk -F'|' '{print $2}' "$history_file" | sort -u)
     
     local anomaly_found=false
     
     for iface in $interfaces; do
-        # Calculate historical average for this interface
+        # Calcular promedio histórico para esta interfaz
         local stats=$(grep "|${iface}|" "$history_file" | tail -31 | head -30 | awk -F'|' '
         {
             rx_sum += $3
@@ -159,12 +159,12 @@ check_traffic_anomalies() {
         local rx_avg=$(echo "$stats" | cut -d'|' -f1)
         local tx_avg=$(echo "$stats" | cut -d'|' -f2)
         
-        # Get current traffic
+        # Obtener tráfico actual
         local current=$(grep "|${iface}|" "$history_file" | tail -1)
         local rx_current=$(echo "$current" | cut -d'|' -f3)
         local tx_current=$(echo "$current" | cut -d'|' -f4)
         
-        # Check for anomalies
+        # Verificar anomalías
         local rx_threshold=$(echo "$rx_avg * $multiplier" | bc)
         local tx_threshold=$(echo "$tx_avg * $multiplier" | bc)
         
@@ -198,5 +198,5 @@ check_traffic_anomalies() {
     fi
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

@@ -1,6 +1,6 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - File Integrity Check Script
-# Feature 8: Verify integrity of hosts.conf file
+# SIM-RED EXTENDIDO - Script de Verificación de Integridad de Archivos
+# Función 8: Verificar integridad del archivo hosts.conf
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -9,20 +9,20 @@ LOG_FILE="${SCRIPT_DIR}/logs/integrity.log"
 HOSTS_FILE="${SCRIPT_DIR}/config/hosts.conf"
 INTEGRITY_FILE="${SCRIPT_DIR}/data/integrity.sha256"
 
-# Main function
+# Función principal
 main() {
     print_header "Verificación de Integridad de Archivos"
     
-    # Check required tools
+    # Verificar herramientas requeridas
     if ! check_required_tools sha256sum; then
         return 1
     fi
     
-    # Initialize log
+    # Inicializar log
     init_log "$LOG_FILE"
     ensure_dir "${SCRIPT_DIR}/data"
     
-    # Check if hosts file exists
+    # Verificar si el archivo hosts existe
     if ! check_file "$HOSTS_FILE"; then
         return 1
     fi
@@ -30,18 +30,18 @@ main() {
     print_info "Verificando integridad de: $HOSTS_FILE"
     echo ""
     
-    # Calculate current hash
+    # Calcular hash actual
     local current_hash=$(sha256sum "$HOSTS_FILE" | awk '{print $1}')
     
     print_info "Hash actual: $current_hash"
     
-    # Check if integrity file exists
+    # Verificar si el archivo de integridad existe
     if [[ -f "$INTEGRITY_FILE" ]]; then
         local stored_hash=$(cat "$INTEGRITY_FILE" 2>/dev/null)
         print_info "Hash almacenado: $stored_hash"
         echo ""
         
-        # Compare hashes
+        # Comparar hashes
         if [[ "$current_hash" == "$stored_hash" ]]; then
             print_success "✓ El archivo NO ha sido modificado"
             log_message "INFO" "File integrity check passed for hosts.conf" "$LOG_FILE"
@@ -72,5 +72,5 @@ main() {
     press_any_key
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

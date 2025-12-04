@@ -1,6 +1,6 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - Average Latency Measurement Script
-# Feature 4: Measure average network latency for all hosts
+# SIM-RED EXTENDIDO - Script de Medición de Latencia Promedio
+# Función 4: Medir latencia promedio de red para todos los hosts
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -8,19 +8,19 @@ source "${SCRIPT_DIR}/lib/network_utils.sh"
 
 LOG_FILE="${SCRIPT_DIR}/logs/latency.log"
 
-# Main function
+# Función principal
 main() {
     print_header "Medición de Latencia Promedio de la Red"
     
-    # Check required tools
+    # Verificar herramientas requeridas
     if ! check_required_tools ping gawk bc; then
         return 1
     fi
     
-    # Initialize log
+    # Inicializar log
     init_log "$LOG_FILE"
     
-    # Load authorized hosts
+    # Cargar hosts autorizados
     local hosts_file="${SCRIPT_DIR}/config/hosts.conf"
     if ! check_file "$hosts_file"; then
         return 1
@@ -29,15 +29,15 @@ main() {
     print_info "Midiendo latencia de todos los hosts autorizados..."
     echo ""
     
-    # Temporary file for results
+    # Archivo temporal para resultados
     local temp_file=$(mktemp)
     
-    # Measure latency for each host
+    # Medir latencia para cada host
     while IFS='|' read -r ip mac hostname desc; do
         measure_host_latency "$ip" "$hostname" >> "$temp_file"
     done < <(load_authorized_hosts "$hosts_file")
     
-    # Sort by average latency
+    # Ordenar por latencia promedio
     echo ""
     print_separator
     printf "${BOLD}%-15s %-15s %10s %10s %10s %10s${NC}\n" \
@@ -47,7 +47,7 @@ main() {
     sort -t'|' -k3 -n "$temp_file" | while IFS='|' read -r ip hostname min avg max mdev status; do
         local color="$GREEN"
         
-        # Color based on average latency
+        # Color basado en latencia promedio
         local avg_int=$(echo "$avg" | cut -d'.' -f1)
         if [[ $avg_int -gt 100 ]]; then
             color="$RED"
@@ -62,7 +62,7 @@ main() {
     print_separator
     echo ""
     
-    # Calculate network statistics
+    # Calcular estadísticas de red
     print_color "$CYAN" "ESTADÍSTICAS DE LA RED:"
     print_separator
     
@@ -87,7 +87,7 @@ main() {
         if (count > 0) {
             mean = sum / count
             
-            # Calculate standard deviation
+            # Calcular desviación estándar
             sum_sq = 0
             for (i = 1; i <= count; i++) {
                 diff = values[i] - mean
@@ -114,27 +114,27 @@ main() {
         printf "  Desviación estándar:  %.2f ms\n" $net_std
         echo ""
         
-        # Save to history
+        # Guardar en historial
         local history_file="${SCRIPT_DIR}/data/latency_history.dat"
         ensure_dir "${SCRIPT_DIR}/data"
         echo "$(date +%s)|$net_avg|$net_min|$net_max|$net_std" >> "$history_file"
         
-        # Log results
+        # Registrar resultados
         log_message "INFO" "Network latency: avg=$net_avg ms, min=$net_min ms, max=$net_max ms, stddev=$net_std ms" "$LOG_FILE"
     fi
     
-    # Cleanup
+    # Limpiar
     rm -f "$temp_file"
     
     press_any_key
 }
 
-# Measure latency for a single host
+# Medir latencia para un host individual
 measure_host_latency() {
     local ip="$1"
     local hostname="$2"
     
-    # Ping host
+    # Hacer ping al host
     local result=$(ping_host "$ip" 10)
     
     if [[ -n "$result" ]]; then
@@ -143,7 +143,7 @@ measure_host_latency() {
         local max=$(echo "$result" | cut -d'|' -f3)
         local mdev=$(echo "$result" | cut -d'|' -f4)
         
-        # Determine status
+        # Determinar estado
         local status="OK"
         local avg_int=$(echo "$avg" | cut -d'.' -f1)
         
@@ -155,7 +155,7 @@ measure_host_latency() {
         
         echo "$ip|$hostname|$avg|$min|$max|$mdev|$status"
         
-        # Log
+        # Registrar
         log_message "INFO" "Latency for $ip ($hostname): avg=$avg ms" "$LOG_FILE"
     else
         echo "$ip|$hostname|N/A|N/A|N/A|N/A|UNREACHABLE"
@@ -163,5 +163,5 @@ measure_host_latency() {
     fi
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

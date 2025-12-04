@@ -1,6 +1,6 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - Report Generation Script
-# Feature 12: Generate complete network status report
+# SIM-RED EXTENDIDO - Script de Generación de Informes
+# Función 12: Generar informe completo del estado de la red
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -9,24 +9,24 @@ source "${SCRIPT_DIR}/lib/network_utils.sh"
 LOG_FILE="${SCRIPT_DIR}/logs/system.log"
 REPORT_DIR="${SCRIPT_DIR}/reports"
 
-# Main function
+# Función principal
 main() {
     print_header "Generación de Informe Completo de Red"
     
-    # Initialize
+    # Inicializar
     init_log "$LOG_FILE"
     ensure_dir "$REPORT_DIR"
     
     print_info "Recopilando información de la red..."
     echo ""
     
-    # Generate report filename
+    # Generar nombre de archivo de informe
     local timestamp=$(date '+%Y%m%d_%H%M%S')
     local report_txt="${REPORT_DIR}/report_${timestamp}.txt"
     local report_html="${REPORT_DIR}/report_${timestamp}.html"
     local report_data="${REPORT_DIR}/report_${timestamp}.dat"
     
-    # Collect all data
+    # Recopilar todos los datos
     print_info "Analizando dispositivos..."
     collect_device_data > "${report_data}.tmp"
     
@@ -36,14 +36,14 @@ main() {
     print_info "Midiendo rendimiento..."
     collect_performance_data >> "${report_data}.tmp"
     
-    # Move temp file
+    # Mover archivo temporal
     mv "${report_data}.tmp" "$report_data"
     
-    # Generate TXT report
+    # Generar informe TXT
     print_info "Generando reporte TXT..."
     generate_txt_report "$report_data" "$report_txt"
     
-    # Generate HTML report
+    # Generar informe HTML
     local format="${REPORT_FORMAT:-both}"
     
     if [[ "$format" == "html" ]] || [[ "$format" == "both" ]]; then
@@ -56,7 +56,7 @@ main() {
         fi
     fi
     
-    # Summary
+    # Resumen
     echo ""
     print_separator
     print_success "✓ Informes generados:"
@@ -77,7 +77,7 @@ main() {
     press_any_key
 }
 
-# Collect device data
+# Recopilar datos de dispositivos
 collect_device_data() {
     echo "[SUMMARY]"
     
@@ -86,14 +86,14 @@ collect_device_data() {
     
     echo "Total Hosts Autorizados: $total_auth"
     
-    # Get connected devices
+    # Obtener dispositivos conectados
     local connected=$(get_arp_table 2>/dev/null | wc -l)
     echo "Dispositivos Conectados: $connected"
     
     echo ""
     echo "[DEVICES]"
     
-    # List devices
+    # Listar dispositivos
     while IFS='|' read -r ip mac; do
         local hostname=$(get_hostname_for_ip "$ip" "$hosts_file")
         
@@ -106,12 +106,12 @@ collect_device_data() {
     done < <(get_arp_table 2>/dev/null)
 }
 
-# Collect security data
+# Recopilar datos de seguridad
 collect_security_data() {
     echo ""
     echo "[SPOOFING]"
     
-    # Check for spoofing (simplified)
+    # Verificar suplantación (simplificado)
     local arp_data=$(get_arp_table 2>/dev/null)
     
     local spoofing=$(echo "$arp_data" | awk -F'|' '
@@ -143,7 +143,7 @@ collect_security_data() {
     echo ""
     echo "[ALERTS]"
     
-    # Get recent alerts from logs
+    # Obtener alertas recientes de los logs
     if [[ -f "${SCRIPT_DIR}/logs/spoofing.log" ]]; then
         tail -10 "${SCRIPT_DIR}/logs/spoofing.log" | grep "ALERT" || echo "Sin alertas recientes"
     else
@@ -151,12 +151,12 @@ collect_security_data() {
     fi
 }
 
-# Collect performance data
+# Recopilar datos de rendimiento
 collect_performance_data() {
     echo ""
     echo "[LATENCY]"
     
-    # Get latency data
+    # Obtener datos de latencia
     local hosts_file="${SCRIPT_DIR}/config/hosts.conf"
     
     while IFS='|' read -r ip mac hostname desc; do
@@ -181,7 +181,7 @@ collect_performance_data() {
     done < <(load_authorized_hosts "$hosts_file" | head -5)
 }
 
-# Generate TXT report
+# Generar informe TXT
 generate_txt_report() {
     local data_file="$1"
     local output_file="$2"
@@ -194,7 +194,7 @@ generate_txt_report() {
         echo "Fecha: $(date '+%Y-%m-%d %H:%M:%S')"
         echo ""
         
-        # Parse data file
+        # Analizar archivo de datos
         local section=""
         
         while IFS= read -r line; do
@@ -217,5 +217,5 @@ generate_txt_report() {
     } > "$output_file"
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

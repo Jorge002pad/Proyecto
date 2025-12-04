@@ -1,6 +1,6 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - Device Verification Script
-# Feature 1: Verify connected devices against authorized list and schedules
+# SIM-RED EXTENDIDO - Script de Verificación de Dispositivos
+# Función 1: Verificar dispositivos conectados contra lista autorizada y horarios
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -8,29 +8,29 @@ source "${SCRIPT_DIR}/lib/network_utils.sh"
 
 LOG_FILE="${SCRIPT_DIR}/logs/devices.log"
 
-# Main function
+# Función principal
 main() {
     print_header "Verificación de Dispositivos Conectados"
     
-    # Check required tools
+    # Verificar herramientas requeridas
     if ! check_required_tools arp-scan gawk; then
         return 1
     fi
     
-    # Check if running as root (needed for arp-scan)
+    # Verificar si se ejecuta como root (necesario para arp-scan)
     if ! check_root; then
         return 1
     fi
     
-    # Initialize log
+    # Inicializar log
     init_log "$LOG_FILE"
     
-    # Get current network info
+    # Obtener información de red actual
     local subnet=$(get_local_subnet)
     print_info "Escaneando subred: $subnet"
     echo ""
     
-    # Scan network
+    # Escanear red
     print_info "Escaneando red..."
     local arp_data=$(get_arp_table)
     
@@ -39,7 +39,7 @@ main() {
         return 1
     fi
     
-    # Load authorized hosts
+    # Cargar hosts autorizados
     local hosts_file="${SCRIPT_DIR}/config/hosts.conf"
     local schedule_file="${SCRIPT_DIR}/config/schedule.conf"
     
@@ -47,7 +47,7 @@ main() {
         return 1
     fi
     
-    # Analyze devices
+    # Analizar dispositivos
     echo ""
     print_separator
     print_color "$CYAN" "DISPOSITIVOS ENCONTRADOS:"
@@ -58,7 +58,7 @@ main() {
     local unknown_count=0
     local unauthorized_count=0
     
-    # Process each device found
+    # Procesar cada dispositivo encontrado
     while IFS='|' read -r ip mac; do
         analyze_device "$ip" "$mac" "$hosts_file" "$schedule_file"
         local status=$?
@@ -70,7 +70,7 @@ main() {
         esac
     done <<< "$arp_data"
     
-    # Check for authorized devices that are NOT connected
+    # Verificar dispositivos autorizados que NO están conectados
     echo ""
     print_separator
     print_color "$CYAN" "DISPOSITIVOS AUTORIZADOS NO CONECTADOS:"
@@ -79,7 +79,7 @@ main() {
     
     local disconnected_count=0
     while IFS='|' read -r auth_ip auth_mac auth_hostname auth_desc; do
-        # Check if this IP was found in scan
+        # Verificar si esta IP fue encontrada en el escaneo
         if ! echo "$arp_data" | grep -q "^${auth_ip}|"; then
             printf "  ${YELLOW}%-15s %-20s %-15s${NC} [DESCONECTADO]\n" \
                 "$auth_ip" "$auth_mac" "$auth_hostname"
@@ -91,7 +91,7 @@ main() {
         print_info "Todos los dispositivos autorizados están conectados"
     fi
     
-    # Summary
+    # Resumen
     echo ""
     print_separator
     print_color "$BOLD" "RESUMEN:"
@@ -103,25 +103,25 @@ main() {
     printf "  ${BLUE}○ Autorizados desconectados:${NC} %d\n" $disconnected_count
     echo ""
     
-    # Log summary
+    # Registrar resumen
     log_message "INFO" "Scan completed: $authorized_count authorized, $unknown_count unknown, $unauthorized_count unauthorized" "$LOG_FILE"
     
     press_any_key
 }
 
-# Analyze a single device
+# Analizar un dispositivo individual
 analyze_device() {
     local ip="$1"
     local mac="$2"
     local hosts_file="$3"
     local schedule_file="$4"
     
-    # Check if IP is authorized
+    # Verificar si la IP está autorizada
     if is_authorized_ip "$ip" "$hosts_file"; then
         local auth_mac=$(get_authorized_mac "$ip" "$hosts_file")
         local hostname=$(get_hostname_for_ip "$ip" "$hosts_file")
         
-        # Check if MAC matches
+        # Verificar si la MAC coincide
         if [[ "${mac,,}" != "${auth_mac,,}" ]]; then
             printf "  ${RED}%-15s %-20s %-15s${NC} [MAC NO COINCIDE: esperado %s]\n" \
                 "$ip" "$mac" "$hostname" "$auth_mac"
@@ -129,7 +129,7 @@ analyze_device() {
             return 2
         fi
         
-        # Check schedule
+        # Verificar horario
         local schedule_status=$(check_schedule "$ip" "$schedule_file")
         
         case "$schedule_status" in
@@ -159,7 +159,7 @@ analyze_device() {
                 ;;
         esac
     else
-        # Unknown device
+        # Dispositivo desconocido
         printf "  ${RED}%-15s %-20s %-15s${NC} [✗ DESCONOCIDO]\n" \
             "$ip" "$mac" "???"
         log_message "ALERT" "Unknown device detected: $ip ($mac)" "$LOG_FILE"
@@ -167,5 +167,5 @@ analyze_device() {
     fi
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

@@ -1,17 +1,17 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - DNS Availability Check Script
-# Feature 10: Check DNS server availability and response time
+# SIM-RED EXTENDIDO - Script de Verificación de Disponibilidad de DNS
+# Función 10: Verificar disponibilidad del servidor DNS y tiempo de respuesta
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
 
 LOG_FILE="${SCRIPT_DIR}/logs/dns.log"
 
-# Main function
+# Función principal
 main() {
     print_header "Comprobación de Disponibilidad del DNS"
     
-    # Check required tools
+    # Verificar herramientas requeridas
     if ! check_required_tools dig; then
         print_warning "dig no está disponible, intentando con host..."
         if ! check_required_tools host; then
@@ -19,10 +19,10 @@ main() {
         fi
     fi
     
-    # Initialize log
+    # Inicializar log
     init_log "$LOG_FILE"
     
-    # Get DNS servers from config
+    # Obtener servidores DNS desde configuración
     local dns_servers="${DNS_SERVERS:-8.8.8.8 8.8.4.4 1.1.1.1}"
     
     print_info "Probando servidores DNS: $dns_servers"
@@ -56,12 +56,12 @@ main() {
     press_any_key
 }
 
-# Test a single DNS server
+# Probar un servidor DNS individual
 test_dns_server() {
     local dns="$1"
     local domain="$2"
     
-    # Try with dig first
+    # Intentar primero con dig
     if command_exists dig; then
         local start_time=$(date +%s%N)
         local result=$(dig @"$dns" "$domain" +short +time=2 +tries=1 2>/dev/null)
@@ -87,7 +87,7 @@ test_dns_server() {
             log_message "ERROR" "DNS $dns is not responding" "$LOG_FILE"
             return 1
         fi
-    # Fallback to host command
+    # Alternativa con comando host
     elif command_exists host; then
         local start_time=$(date +%s%N)
         local result=$(host -W 2 "$domain" "$dns" 2>/dev/null | grep "has address")
@@ -111,5 +111,5 @@ test_dns_server() {
     fi
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

@@ -1,17 +1,17 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - Network Traffic Measurement Script
-# Feature 6: Measure network traffic per interface
+# SIM-RED EXTENDIDO - Script de Medición de Tráfico de Red
+# Función 6: Medir tráfico de red por interfaz
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
 
 LOG_FILE="${SCRIPT_DIR}/logs/traffic.log"
 
-# Main function
+# Función principal
 main() {
     print_header "Medición de Tráfico de Red"
     
-    # Initialize log
+    # Inicializar log
     init_log "$LOG_FILE"
     
     print_info "Selecciona el modo de medición:"
@@ -36,11 +36,11 @@ main() {
     esac
 }
 
-# Instant measurement
+# Medición instantánea
 measure_instant() {
     print_header "Medición Instantánea de Tráfico"
     
-    # Get network interfaces
+    # Obtener interfaces de red
     local interfaces=$(ls /sys/class/net/ 2>/dev/null | grep -v "^lo$")
     
     if [[ -z "$interfaces" ]]; then
@@ -73,7 +73,7 @@ measure_instant() {
     press_any_key
 }
 
-# Continuous monitoring
+# Monitoreo continuo
 monitor_continuous() {
     print_header "Monitoreo Continuo de Tráfico"
     
@@ -81,7 +81,7 @@ monitor_continuous() {
     print_warning "Presiona Ctrl+C para detener"
     echo ""
     
-    # Get interfaces
+    # Obtener interfaces
     local interfaces=$(ls /sys/class/net/ 2>/dev/null | grep -v "^lo$")
     
     if [[ -z "$interfaces" ]]; then
@@ -89,7 +89,7 @@ monitor_continuous() {
         return 1
     fi
     
-    # Initialize previous values
+    # Inicializar valores previos
     declare -A prev_rx
     declare -A prev_tx
     
@@ -131,14 +131,14 @@ monitor_continuous() {
                 "$(format_bytes $tx_rate)" \
                 "$(format_bytes $total_rate)"
             
-            # Update previous values
+            # Actualizar valores previos
             prev_rx[$iface]=$curr_rx
             prev_tx[$iface]=$curr_tx
             
-            # Log
+            # Registrar
             log_message "INFO" "Traffic rate on $iface: RX=$rx_rate/min TX=$tx_rate/min" "$LOG_FILE"
             
-            # Save to history
+            # Guardar en historial
             local history_file="${SCRIPT_DIR}/data/traffic_history.dat"
             ensure_dir "${SCRIPT_DIR}/data"
             echo "$(date +%s)|$iface|$rx_rate|$tx_rate" >> "$history_file"
@@ -150,5 +150,5 @@ monitor_continuous() {
     done
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"

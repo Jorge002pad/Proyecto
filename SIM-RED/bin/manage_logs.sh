@@ -1,13 +1,13 @@
 #!/bin/bash
-# SIM-RED EXTENDIDO - Log Management Script
-# Feature 13: Manage system logs
+# SIM-RED EXTENDIDO - Script de Gestión de Logs
+# Función 13: Gestionar logs del sistema
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
 
 LOGS_DIR="${SCRIPT_DIR}/logs"
 
-# Main function
+# Función principal
 main() {
     while true; do
         print_header "Gestión de Logs"
@@ -32,11 +32,11 @@ main() {
     done
 }
 
-# View logs
+# Ver logs
 view_logs() {
     print_header "Ver Logs"
     
-    # List available logs
+    # Listar logs disponibles
     local logs=$(ls "$LOGS_DIR"/*.log 2>/dev/null)
     
     if [[ -z "$logs" ]]; then
@@ -78,7 +78,7 @@ view_logs() {
         print_separator
         echo ""
         
-        # Show with pagination
+        # Mostrar con paginación
         less "$selected" 2>/dev/null || cat "$selected" | more
     else
         print_error "Selección inválida"
@@ -87,7 +87,7 @@ view_logs() {
     press_any_key
 }
 
-# Clear logs
+# Borrar logs
 clear_logs() {
     print_header "Borrar Logs"
     
@@ -100,7 +100,7 @@ clear_logs() {
         return
     fi
     
-    # List logs
+    # Listar logs
     local logs=$(ls "$LOGS_DIR"/*.log 2>/dev/null)
     
     if [[ -z "$logs" ]]; then
@@ -109,7 +109,7 @@ clear_logs() {
         return
     fi
     
-    # Clear each log
+    # Limpiar cada log
     for log in $logs; do
         > "$log"
         print_success "✓ $(basename "$log") borrado"
@@ -121,7 +121,7 @@ clear_logs() {
     press_any_key
 }
 
-# Export logs
+# Exportar logs
 export_logs() {
     print_header "Exportar Logs"
     
@@ -131,7 +131,7 @@ export_logs() {
     print_info "Exportando logs a: $export_file"
     echo ""
     
-    # Create tarball
+    # Crear tarball
     tar -czf "$export_file" -C "$SCRIPT_DIR" logs/ 2>/dev/null
     
     if [[ $? -eq 0 ]]; then
@@ -148,7 +148,7 @@ export_logs() {
     press_any_key
 }
 
-# Log statistics
+# Estadísticas de logs
 log_statistics() {
     print_header "Estadísticas de Logs"
     
@@ -182,5 +182,5 @@ log_statistics() {
     press_any_key
 }
 
-# Run main function
+# Ejecutar función principal
 main "$@"
