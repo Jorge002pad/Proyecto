@@ -120,7 +120,7 @@ El sistema proporciona 15 funciones especializadas para:
 ```
 SIM-RED/
 ├── sim-red.sh              # Script principal con menú
-├── bin/                    # Scripts de funciones
+├── bin/                    # Scripts de funciones (15 módulos)
 │   ├── check_devices.sh
 │   ├── check_spoofing.sh
 │   ├── detect_vpn.sh
@@ -149,8 +149,25 @@ SIM-RED/
 ├── logs/                   # Archivos de log
 ├── reports/                # Informes generados
 ├── data/                   # Datos históricos
+├── diagramas/              # Diagramas del proyecto
+│   ├── arquitectura_sistema.png
+│   ├── flujo_trabajo.png
+│   └── estructura_archivos.png
+├── Documentacion_Profesor/ # Documentación completa para presentación
+│   ├── DOCUMENTACION_COMPLETA_SIM-RED.html
+│   ├── arquitectura_sistema.png
+│   ├── flujo_trabajo.png
+│   ├── estructura_archivos.png
+│   └── LEEME.txt
+├── generar_documentacion_profesor.py  # Script para generar documentación
+├── generar_presentacion.py            # Script para generar presentación
+├── convertir_a_pdf.py                 # Script para convertir a PDF
 ├── README.md
-└── INSTALL.md
+├── INSTALL.md
+├── GUIA_COMPLETA.md
+├── FILES.md
+├── AUTO_DETECTION.md
+└── NETWORK_SETUP.md
 ```
 
 ## 🚀 Inicio Rápido
@@ -245,6 +262,45 @@ sudo ./sim-red.sh
 - Verifica integridad de archivos de configuración
 - Registra todas las actividades en logs
 - Detecta modificaciones no autorizadas
+
+## 📚 Documentación Completa
+
+### Documentación para Profesores/Presentaciones
+
+El proyecto incluye documentación completa en la carpeta `Documentacion_Profesor/`:
+
+- **DOCUMENTACION_COMPLETA_SIM-RED.html** - Documento HTML profesional que incluye:
+  - Introducción y contexto del proyecto
+  - Arquitectura del sistema con diagramas
+  - Tutorial detallado de las 15 funcionalidades
+  - Guía de configuración de archivos
+  - Preguntas frecuentes (FAQ)
+
+Para generar/actualizar la documentación:
+```bash
+python generar_documentacion_profesor.py
+```
+
+### Archivos de Documentación Adicionales
+
+- `GUIA_COMPLETA.md` - Documentación técnica detallada de todas las funciones
+- `INSTALL.md` - Guía de instalación paso a paso
+- `FILES.md` - Lista completa de archivos del proyecto
+- `AUTO_DETECTION.md` - Guía de autodetección de red
+- `NETWORK_SETUP.md` - Configuración de red
+
+### Presentaciones
+
+El proyecto incluye scripts para generar presentaciones:
+- `generar_presentacion.py` - Genera documento Word con presentación completa
+- `convertir_a_pdf.py` - Convierte documentos Word a PDF
+
+## 🌐 Idioma
+
+- **Código:** Todos los scripts están en Bash, AWK y Perl
+- **Comentarios:** Traducidos al español para mejor comprensión
+- **Interfaz:** Menús y mensajes en español
+- **Documentación:** Disponible en español
 
 ## 📝 Logs
 

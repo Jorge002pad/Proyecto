@@ -5,9 +5,16 @@
 ### Directorio Raíz
 ```
 SIM-RED/
-├── sim-red.sh (7.9 KB)          # Script principal con menú interactivo
-├── README.md (8.4 KB)           # Documentación principal del proyecto
-└── INSTALL.md (8.3 KB)          # Guía de instalación completa
+├── sim-red.sh (7.9 KB)                          # Script principal con menú interactivo
+├── generar_documentacion_profesor.py (41.3 KB)  # Generador de documentación completa
+├── generar_presentacion.py (23.5 KB)            # Generador de presentación Word
+├── convertir_a_pdf.py (0.9 KB)                  # Convertidor Word a PDF
+├── README.md (9.5 KB)                           # Documentación principal del proyecto
+├── INSTALL.md (8.3 KB)                          # Guía de instalación completa
+├── GUIA_COMPLETA.md (32.6 KB)                   # Documentación técnica detallada
+├── FILES.md (7.8 KB)                            # Lista completa de archivos
+├── AUTO_DETECTION.md (5.4 KB)                   # Guía de autodetección de red
+└── NETWORK_SETUP.md (6.0 KB)                    # Configuración de red
 ```
 
 ### Directorio bin/ (15 scripts de funciones)
@@ -61,6 +68,18 @@ reports/                            # Directorio para informes generados
 data/                               # Directorio para datos históricos
 ├── .gitkeep
 └── (archivos .dat se crean automáticamente)
+
+diagramas/                          # Diagramas del proyecto
+├── arquitectura_sistema.png (631 KB)
+├── flujo_trabajo.png (560 KB)
+└── estructura_archivos.png (578 KB)
+
+Documentacion_Profesor/             # Documentación completa para presentación
+├── DOCUMENTACION_COMPLETA_SIM-RED.html (40 KB)
+├── arquitectura_sistema.png (631 KB)
+├── flujo_trabajo.png (560 KB)
+├── estructura_archivos.png (578 KB)
+└── LEEME.txt (1.5 KB)
 ```
 
 ## 📊 Resumen de Archivos
@@ -71,8 +90,10 @@ data/                               # Directorio para datos históricos
 | Scripts de funciones | 15 | 74.7 KB |
 | Bibliotecas | 4 | 30.5 KB |
 | Configuración | 4 | 3.3 KB |
-| Documentación | 2 | 16.7 KB |
-| **TOTAL** | **26** | **~133 KB** |
+| Documentación | 6 | 71.9 KB |
+| Scripts Python | 3 | 65.7 KB |
+| Diagramas | 3 | 1.7 MB |
+| **TOTAL** | **36** | **~2.0 MB** |
 
 ## 🎯 Archivos por Función
 
@@ -227,12 +248,42 @@ find . -type f | wc -l
 - `config/config.conf`
 - `config/requirements.txt`
 
-### Documentación Markdown (2 archivos)
+### Documentación Markdown (6 archivos)
 - `README.md`
 - `INSTALL.md`
+- `GUIA_COMPLETA.md`
+- `FILES.md`
+- `AUTO_DETECTION.md`
+- `NETWORK_SETUP.md`
+
+### Scripts Python (3 archivos)
+- `generar_documentacion_profesor.py` - Generador de documentación HTML
+- `generar_presentacion.py` - Generador de presentación Word
+- `convertir_a_pdf.py` - Convertidor Word a PDF
+
+### Diagramas (3 archivos)
+- `diagramas/arquitectura_sistema.png`
+- `diagramas/flujo_trabajo.png`
+- `diagramas/estructura_archivos.png`
+
+## 📚 Documentación Generada
+
+### Carpeta Documentacion_Profesor/
+Contiene documentación completa para presentaciones:
+- **DOCUMENTACION_COMPLETA_SIM-RED.html** - Documento HTML profesional con:
+  - Introducción y contexto del proyecto
+  - Arquitectura del sistema con diagramas
+  - Tutorial de las 15 funcionalidades
+  - Guía de configuración
+  - Preguntas frecuentes (FAQ)
+
+Para generar/actualizar:
+```bash
+python generar_documentacion_profesor.py
+```
 
 ---
 
-**Total de archivos creados: 26 archivos + 3 directorios de datos**
+**Total de archivos del proyecto: 36 archivos + 5 directorios de datos**
 
 **Proyecto completo y listo para usar en Ubuntu Linux**

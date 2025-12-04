@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM-RED EXTENDIDO - Documentación Completa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            color: #1e3c72;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .subsection-title {
+            font-size: 1.5em;
+            color: #2a5298;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .diagram {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .diagram img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .diagram-caption {
+            margin-top: 15px;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .menu-option {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .menu-option h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+        
+        .menu-option .option-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .code-block code {
+            font-size: 0.9em;
+        }
+        
+        .config-example {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .faq-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .faq-question {
+            font-weight: bold;
+            color: #1e3c72;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .faq-answer {
+            color: #555;
+            line-height: 1.8;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            color: #0c5460;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #856404;
+            color: #856404;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #155724;
+            color: #155724;
+        }
+        
+        ul, ol {
+            margin-left: 25px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .toc h2 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .toc li {
+            padding: 8px 0;
+        }
+        
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🛡️ SIM-RED EXTENDIDO</h1>
+            <p>Sistema de Análisis y Seguridad de Red</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Documentación Completa del Proyecto</p>
+            <p style="font-size: 0.8em; margin-top: 15px;">Generado: 04 de December de 2025 - 09:54</p>
+        </div>
+        
+        <!-- CONTENT -->
+        <div class="content">
+            <!-- TABLA DE CONTENIDOS -->
+            <div class="toc">
+                <h2>📑 Tabla de Contenidos</h2>
+                <ul>
+                    <li><a href="#introduccion">1. Introducción y Contexto del Proyecto</a></li>
+                    <li><a href="#arquitectura">2. Arquitectura del Sistema</a></li>
+                    <li><a href="#tutoriales">3. Tutorial de Funcionalidades</a></li>
+                    <li><a href="#configuracion">4. Guía de Configuración</a></li>
+                    <li><a href="#faq">5. Preguntas Frecuentes (FAQ)</a></li>
+                </ul>
+            </div>
+            
+            <!-- SECCIÓN 1: INTRODUCCIÓN -->
+            <div class="section" id="introduccion">
+                <h2 class="section-title">1. Introducción y Contexto del Proyecto</h2>
+                
+                <h3 class="subsection-title">¿Qué es SIM-RED EXTENDIDO?</h3>
+                <p>
+                    <strong>SIM-RED EXTENDIDO</strong> es un sistema completo de análisis y seguridad de red desarrollado 
+                    íntegramente en Bash, AWK y Perl. El proyecto fue diseñado para aplicar conocimientos de administración 
+                    de redes y scripting en un entorno práctico y funcional.
+                </p>
+                
+                <h3 class="subsection-title">Objetivos del Proyecto</h3>
+                <ul>
+                    <li><strong>Monitoreo de Red:</strong> Supervisar dispositivos conectados y su comportamiento</li>
+                    <li><strong>Seguridad:</strong> Detectar amenazas como spoofing, dispositivos no autorizados y anomalías</li>
+                    <li><strong>Análisis de Rendimiento:</strong> Medir latencia, tráfico y disponibilidad de servicios</li>
+                    <li><strong>Gestión:</strong> Administrar configuraciones, logs e informes del sistema</li>
+                </ul>
+                
+                <h3 class="subsection-title">Tecnologías Utilizadas</h3>
+                <ul>
+                    <li><strong>Bash:</strong> Script principal y lógica de control</li>
+                    <li><strong>AWK (gawk):</strong> Procesamiento de datos y análisis estadístico</li>
+                    <li><strong>Perl:</strong> Generación de informes HTML y procesamiento avanzado</li>
+                    <li><strong>Herramientas de Red:</strong> arp-scan, nmap, ping, dig, netstat</li>
+                </ul>
+                
+                <div class="alert alert-info">
+                    <strong>💡 Nota Importante:</strong> Este proyecto fue desarrollado sin usar frameworks o lenguajes 
+                    de alto nivel, demostrando el poder y versatilidad de las herramientas nativas de Linux.
+                </div>
+            </div>
+            
+            <!-- SECCIÓN 2: ARQUITECTURA -->
+            <div class="section" id="arquitectura">
+                <h2 class="section-title">2. Arquitectura del Sistema</h2>
+                
+                <h3 class="subsection-title">Estructura General</h3>
+                <p>
+                    SIM-RED EXTENDIDO está organizado en módulos independientes que trabajan de manera coordinada. 
+                    Cada funcionalidad es un script separado que puede ejecutarse de forma autónoma o desde el menú principal.
+                </p>
+                
+                <div class="diagram">
+                    <img src="arquitectura_sistema.png" alt="Arquitectura del Sistema">
+                    <p class="diagram-caption">Figura 1: Arquitectura modular de SIM-RED EXTENDIDO</p>
+                </div>
+                
+                <h3 class="subsection-title">Componentes Principales</h3>
+                <ul>
+                    <li><strong>sim-red.sh:</strong> Menú principal e interfaz de usuario</li>
+                    <li><strong>bin/:</strong> 15 módulos de funcionalidades específicas</li>
+                    <li><strong>lib/:</strong> Bibliotecas compartidas (funciones comunes, utilidades de red)</li>
+                    <li><strong>config/:</strong> Archivos de configuración (hosts, horarios, parámetros)</li>
+                    <li><strong>logs/:</strong> Registro de eventos y actividades</li>
+                    <li><strong>data/:</strong> Datos históricos y cache</li>
+                    <li><strong>reports/:</strong> Informes generados</li>
+                </ul>
+                
+                <div class="diagram">
+                    <img src="flujo_trabajo.png" alt="Flujo de Trabajo">
+                    <p class="diagram-caption">Figura 2: Flujo de trabajo del sistema</p>
+                </div>
+                
+                <div class="diagram">
+                    <img src="estructura_archivos.png" alt="Estructura de Archivos">
+                    <p class="diagram-caption">Figura 3: Organización de directorios y archivos</p>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN 3: TUTORIALES -->
+            <div class="section" id="tutoriales">
+                <h2 class="section-title">3. Tutorial de Funcionalidades</h2>
+                <p>A continuación se explica cada una de las 15 opciones del menú principal:</p>
+                
+                <!-- Opción 1 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">1</span>Verificar Dispositivos Conectados</h3>
+                    <p><strong>Propósito:</strong> Escanea la red local y compara los dispositivos encontrados con la lista de hosts autorizados.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Usa <code>arp-scan</code> para descubrir dispositivos en la red</li>
+                        <li>Compara IPs y MACs con el archivo <code>hosts.conf</code></li>
+                        <li>Verifica horarios permitidos según <code>schedule.conf</code></li>
+                        <li>Identifica dispositivos desconocidos o no autorizados</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Lista de dispositivos clasificados como autorizados, desconocidos o fuera de horario.</p>
+                </div>
+                
+                <!-- Opción 2 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">2</span>Verificar Suplantación de IP (Anti-Spoofing)</h3>
+                    <p><strong>Propósito:</strong> Detecta intentos de suplantación de identidad en la red.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Analiza la tabla ARP en busca de anomalías</li>
+                        <li>Detecta IPs con múltiples MACs (posible spoofing)</li>
+                        <li>Detecta MACs con múltiples IPs (posible ataque)</li>
+                        <li>Compara con historial para detectar cambios de MAC</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Alerta si se detectan inconsistencias en la tabla ARP.</p>
+                </div>
+                
+                <!-- Opción 3 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">3</span>Detectar VPN/Proxy</h3>
+                    <p><strong>Propósito:</strong> Identifica si los usuarios están usando VPN o servicios proxy.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Analiza variaciones en el TTL (Time To Live)</li>
+                        <li>Mide desviaciones en la latencia</li>
+                        <li>Escanea puertos comunes de VPN (1194, 500, 4500, 1723)</li>
+                        <li>Calcula probabilidad basada en múltiples indicadores</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Probabilidad (BAJA/MEDIA/ALTA) de uso de VPN/Proxy por cada host.</p>
+                </div>
+                
+                <!-- Opción 4 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">4</span>Medir Latencia Promedio</h3>
+                    <p><strong>Propósito:</strong> Mide el tiempo de respuesta de todos los hosts autorizados.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Hace ping a cada host autorizado (10 paquetes)</li>
+                        <li>Calcula latencia mínima, promedio, máxima y desviación</li>
+                        <li>Genera estadísticas globales de la red</li>
+                        <li>Guarda datos históricos para análisis de tendencias</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Tabla con latencias y estadísticas de red.</p>
+                </div>
+                
+                <!-- Opción 5 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">5</span>Monitoreo Continuo de Latencia</h3>
+                    <p><strong>Propósito:</strong> Supervisa la latencia en tiempo real con gráficas ASCII.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Mide latencia cada segundo de hasta 5 hosts</li>
+                        <li>Muestra valores actuales con código de colores</li>
+                        <li>Genera gráfica ASCII de tendencia</li>
+                        <li>Alerta cuando se supera el umbral configurado</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Pantalla actualizada en tiempo real con métricas y gráfica.</p>
+                    <div class="alert alert-warning">
+                        <strong>⚠️ Atención:</strong> Presiona Ctrl+C para detener el monitoreo continuo.
+                    </div>
+                </div>
+                
+                <!-- Opción 6 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">6</span>Medir Tráfico de Red</h3>
+                    <p><strong>Propósito:</strong> Mide el tráfico de red por interfaz.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li><strong>Modo Instantáneo:</strong> Muestra bytes RX/TX totales por interfaz</li>
+                        <li><strong>Modo Continuo:</strong> Calcula tráfico por minuto en tiempo real</li>
+                        <li>Guarda historial para análisis de anomalías</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Tabla con tráfico de red formateado (KB, MB, GB).</p>
+                </div>
+                
+                <!-- Opción 7 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">7</span>Monitoreo ARP en Tiempo Real</h3>
+                    <p><strong>Propósito:</strong> Detecta cambios en la tabla ARP en tiempo real.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Monitorea <code>/proc/net/arp</code> cada 5 segundos</li>
+                        <li>Detecta nuevas entradas (dispositivos que se conectan)</li>
+                        <li>Detecta entradas eliminadas (dispositivos que se desconectan)</li>
+                        <li>Clasifica nuevos dispositivos como autorizados o desconocidos</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Notificaciones en tiempo real de cambios en la red.</p>
+                </div>
+                
+                <!-- Opción 8 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">8</span>Verificar Integridad de Archivos</h3>
+                    <p><strong>Propósito:</strong> Detecta modificaciones no autorizadas en <code>hosts.conf</code>.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Calcula hash SHA256 del archivo de hosts</li>
+                        <li>Compara con hash almacenado previamente</li>
+                        <li>Alerta si el archivo fue modificado</li>
+                        <li>Permite actualizar el hash después de cambios legítimos</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Confirmación de integridad o alerta de modificación.</p>
+                </div>
+                
+                <!-- Opción 9 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">9</span>Escanear Puertos</h3>
+                    <p><strong>Propósito:</strong> Identifica puertos abiertos en hosts autorizados.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Usa <code>nmap</code> para escanear puertos configurados</li>
+                        <li>Puertos por defecto: 22 (SSH), 80 (HTTP), 443 (HTTPS), 3306 (MySQL), 5432 (PostgreSQL), 8080</li>
+                        <li>Identifica servicios en cada puerto</li>
+                        <li>Marca servicios inesperados para revisión</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Lista de puertos abiertos por host con estado (ESPERADO/REVISAR).</p>
+                </div>
+                
+                <!-- Opción 10 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">10</span>Comprobar DNS</h3>
+                    <p><strong>Propósito:</strong> Verifica disponibilidad y rendimiento de servidores DNS.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Prueba servidores DNS configurados (por defecto: 8.8.8.8, 8.8.4.4, 1.1.1.1)</li>
+                        <li>Mide tiempo de respuesta de cada servidor</li>
+                        <li>Usa <code>dig</code> o <code>host</code> según disponibilidad</li>
+                        <li>Detecta servidores lentos o no disponibles</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Tabla con estado y tiempo de respuesta de cada DNS.</p>
+                </div>
+                
+                <!-- Opción 11 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">11</span>Detectar Anomalías</h3>
+                    <p><strong>Propósito:</strong> Identifica comportamientos anormales usando análisis estadístico.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li><strong>Anomalías de Latencia:</strong> Compara latencia actual vs promedio histórico</li>
+                        <li><strong>Anomalías de Tráfico:</strong> Detecta picos inusuales de RX/TX por interfaz</li>
+                        <li>Usa multiplicador configurable (por defecto 2x el promedio)</li>
+                        <li>Requiere datos históricos (mínimo 30 mediciones)</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Alerta si se detectan valores fuera de rango normal.</p>
+                </div>
+                
+                <!-- Opción 12 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">12</span>Generar Informe Completo</h3>
+                    <p><strong>Propósito:</strong> Crea un informe consolidado del estado de la red.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Recopila datos de dispositivos, seguridad y rendimiento</li>
+                        <li>Genera informe en formato TXT (siempre)</li>
+                        <li>Genera informe en formato HTML (si Perl está disponible)</li>
+                        <li>Incluye resumen, dispositivos, alertas y latencias</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Archivos de informe en <code>reports/</code> con timestamp.</p>
+                </div>
+                
+                <!-- Opción 13 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">13</span>Gestión de Logs</h3>
+                    <p><strong>Propósito:</strong> Administra los archivos de registro del sistema.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li><strong>Ver Logs:</strong> Muestra contenido de logs con paginación</li>
+                        <li><strong>Borrar Logs:</strong> Limpia todos los archivos de log</li>
+                        <li><strong>Exportar Logs:</strong> Crea archivo .tar.gz con todos los logs</li>
+                        <li><strong>Estadísticas:</strong> Muestra tamaño, líneas, mensajes INFO y ALERT</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Interfaz de gestión de logs con múltiples opciones.</p>
+                </div>
+                
+                <!-- Opción 14 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">14</span>Configuración del Sistema</h3>
+                    <p><strong>Propósito:</strong> Modifica parámetros y configuraciones del sistema.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li><strong>Cambiar Subred:</strong> Define la red a escanear</li>
+                        <li><strong>Intervalos de Monitoreo:</strong> Ajusta frecuencia de monitoreos</li>
+                        <li><strong>Gestionar Hosts:</strong> Añadir, ver o eliminar hosts autorizados</li>
+                        <li><strong>Umbrales de Alerta:</strong> Configura límites para alertas</li>
+                        <li><strong>Ver Configuración:</strong> Muestra parámetros actuales</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Menú interactivo de configuración.</p>
+                </div>
+                
+                <!-- Opción 15 -->
+                <div class="menu-option">
+                    <h3><span class="option-number">15</span>Verificación de Herramientas</h3>
+                    <p><strong>Propósito:</strong> Verifica e instala herramientas necesarias.</p>
+                    <p><strong>Qué hace:</strong></p>
+                    <ul>
+                        <li>Lee <code>requirements.txt</code> con herramientas necesarias</li>
+                        <li>Verifica si cada herramienta está instalada</li>
+                        <li>Ofrece instalar herramientas faltantes automáticamente</li>
+                        <li>Usa <code>apt-get</code> para instalación (requiere sudo)</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Reporte de herramientas instaladas/faltantes con opción de instalación.</p>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN 4: CONFIGURACIÓN -->
+            <div class="section" id="configuracion">
+                <h2 class="section-title">4. Guía de Configuración</h2>
+                
+                <h3 class="subsection-title">4.1 Configurar Hosts Autorizados (hosts.conf)</h3>
+                <p>
+                    El archivo <code>config/hosts.conf</code> define qué dispositivos están permitidos en la red.
+                </p>
+                
+                <p><strong>Formato:</strong></p>
+                <div class="code-block">
+                    <code>IP|MAC|HOSTNAME|DESCRIPCIÓN</code>
+                </div>
+                
+                <p><strong>Ejemplo:</strong></p>
+                <div class="config-example">
+                    <code>
+                        # Servidor principal<br>
+                        192.168.1.10|aa:bb:cc:dd:ee:ff|servidor-web|Servidor Web Apache<br>
+                        <br>
+                        # Estación de trabajo del administrador<br>
+                        192.168.1.20|11:22:33:44:55:66|admin-pc|PC del Administrador<br>
+                        <br>
+                        # Impresora de red<br>
+                        192.168.1.30|aa:11:bb:22:cc:33|impresora-hp|Impresora HP LaserJet
+                    </code>
+                </div>
+                
+                <p><strong>Cómo obtener la MAC de un dispositivo:</strong></p>
+                <div class="code-block">
+                    <code>
+                        # En Linux/Mac:<br>
+                        ip link show<br>
+                        <br>
+                        # En Windows:<br>
+                        ipconfig /all
+                    </code>
+                </div>
+                
+                <div class="alert alert-info">
+                    <strong>💡 Tip:</strong> Puedes usar la opción 14 del menú (Configuración) para añadir hosts 
+                    de forma interactiva sin editar el archivo manualmente.
+                </div>
+                
+                <h3 class="subsection-title">4.2 Configurar Horarios (schedule.conf)</h3>
+                <p>
+                    El archivo <code>config/schedule.conf</code> define cuándo cada dispositivo puede conectarse.
+                </p>
+                
+                <p><strong>Formato:</strong></p>
+                <div class="code-block">
+                    <code>IP|DÍAS|HORA_INICIO|HORA_FIN</code>
+                </div>
+                
+                <p><strong>Ejemplos:</strong></p>
+                <div class="config-example">
+                    <code>
+                        # Acceso 24/7<br>
+                        192.168.1.10|Mon-Sun|00:00|23:59<br>
+                        <br>
+                        # Solo horario laboral (Lunes a Viernes, 8am-6pm)<br>
+                        192.168.1.20|Mon-Fri|08:00|18:00<br>
+                        <br>
+                        # Solo fines de semana<br>
+                        192.168.1.30|Sat-Sun|10:00|22:00<br>
+                        <br>
+                        # Días específicos<br>
+                        192.168.1.40|Mon,Wed,Fri|09:00|17:00
+                    </code>
+                </div>
+                
+                <p><strong>Días válidos:</strong></p>
+                <ul>
+                    <li>Mon (Lunes), Tue (Martes), Wed (Miércoles), Thu (Jueves)</li>
+                    <li>Fri (Viernes), Sat (Sábado), Sun (Domingo)</li>
+                    <li>Rangos: Mon-Fri, Sat-Sun, Mon-Sun</li>
+                    <li>Individuales: Mon,Wed,Fri</li>
+                </ul>
+                
+                <h3 class="subsection-title">4.3 Configuración General (config.conf)</h3>
+                <p>
+                    El archivo <code>config/config.conf</code> contiene parámetros globales del sistema.
+                </p>
+                
+                <p><strong>Parámetros principales:</strong></p>
+                <div class="config-example">
+                    <code>
+                        # Subred a escanear<br>
+                        SUBNET="192.168.1.0/24"<br>
+                        <br>
+                        # Interfaz de red<br>
+                        NETWORK_INTERFACE="eth0"<br>
+                        <br>
+                        # Umbrales de latencia (ms)<br>
+                        LATENCY_THRESHOLD_MS=50<br>
+                        LATENCY_ALERT_MS=200<br>
+                        <br>
+                        # Multiplicador para detección de anomalías<br>
+                        TRAFFIC_ANOMALY_MULTIPLIER=2.0<br>
+                        <br>
+                        # Servidores DNS a probar<br>
+                        DNS_SERVERS="8.8.8.8 8.8.4.4 1.1.1.1"<br>
+                        <br>
+                        # Puertos a escanear<br>
+                        PORTS_TO_SCAN="22,80,443,3306,5432,8080"
+                    </code>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>⚠️ Importante:</strong> Después de modificar archivos de configuración, 
+                    usa la opción 8 (Verificar Integridad) para actualizar el hash si es necesario.
+                </div>
+            </div>
+            
+            <!-- SECCIÓN 5: FAQ -->
+            <div class="section" id="faq">
+                <h2 class="section-title">5. Preguntas Frecuentes (FAQ)</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Cómo ejecuto SIM-RED EXTENDIDO?</div>
+                    <div class="faq-answer">
+                        Desde el directorio del proyecto, ejecuta:<br>
+                        <div class="code-block"><code>sudo ./sim-red.sh</code></div>
+                        Se requiere <code>sudo</code> porque algunas herramientas como <code>arp-scan</code> necesitan permisos de root.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Por qué aparece "Permission denied"?</div>
+                    <div class="faq-answer">
+                        Asegúrate de ejecutar con <code>sudo</code>. Si el problema persiste, verifica permisos:<br>
+                        <div class="code-block"><code>chmod +x sim-red.sh<br>chmod +x bin/*.sh</code></div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Qué hago si faltan herramientas?</div>
+                    <div class="faq-answer">
+                        Ejecuta la opción 15 del menú (Verificación de Herramientas). El sistema te ofrecerá 
+                        instalar automáticamente las herramientas faltantes. También puedes instalarlas manualmente:<br>
+                        <div class="code-block"><code>sudo apt-get install arp-scan nmap gawk bc perl</code></div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Cómo añado un nuevo dispositivo autorizado?</div>
+                    <div class="faq-answer">
+                        Tienes dos opciones:<br>
+                        <strong>Opción 1 (Recomendada):</strong> Usa el menú → Opción 14 (Configuración) → Gestionar Hosts → Añadir Host<br>
+                        <strong>Opción 2:</strong> Edita manualmente <code>config/hosts.conf</code> siguiendo el formato IP|MAC|HOSTNAME|DESCRIPCIÓN
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Cómo configuro horarios de acceso?</div>
+                    <div class="faq-answer">
+                        Edita <code>config/schedule.conf</code> o usa la opción 14 del menú al añadir un host. 
+                        El formato es: IP|DÍAS|HORA_INICIO|HORA_FIN<br>
+                        Ejemplo: <code>192.168.1.20|Mon-Fri|08:00|18:00</code>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Dónde se guardan los informes generados?</div>
+                    <div class="faq-answer">
+                        Los informes se guardan en la carpeta <code>reports/</code> con el formato:<br>
+                        <code>report_YYYYMMDD_HHMMSS.txt</code> (texto plano)<br>
+                        <code>report_YYYYMMDD_HHMMSS.html</code> (HTML, si Perl está disponible)
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Cómo veo los logs del sistema?</div>
+                    <div class="faq-answer">
+                        Usa la opción 13 del menú (Gestión de Logs). Los logs se encuentran en <code>logs/</code>:<br>
+                        <ul>
+                            <li><code>devices.log</code> - Verificación de dispositivos</li>
+                            <li><code>spoofing.log</code> - Detección de spoofing</li>
+                            <li><code>latency.log</code> - Mediciones de latencia</li>
+                            <li><code>vpn.log</code> - Detección de VPN/Proxy</li>
+                            <li>Y más...</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Qué significa "FUERA DE HORARIO"?</div>
+                    <div class="faq-answer">
+                        Indica que un dispositivo está conectado fuera de su horario permitido según <code>schedule.conf</code>. 
+                        El dispositivo está autorizado, pero no en ese momento específico.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Cómo cambio la subred a escanear?</div>
+                    <div class="faq-answer">
+                        Usa la opción 14 del menú (Configuración) → Cambiar Subred. También puedes editar 
+                        manualmente <code>config/config.conf</code> y modificar la línea <code>SUBNET="..."</code>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿El sistema funciona en otras distribuciones de Linux?</div>
+                    <div class="faq-answer">
+                        Sí, funciona en cualquier distribución Linux que tenga Bash, AWK y las herramientas de red necesarias. 
+                        Fue desarrollado y probado en Ubuntu, pero es compatible con Debian, CentOS, Fedora, etc.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Cómo detengo un monitoreo continuo?</div>
+                    <div class="faq-answer">
+                        Presiona <code>Ctrl+C</code> en cualquier momento para detener monitoreos continuos 
+                        (opciones 5, 6 en modo continuo, y 7).
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Qué hago si detecto un dispositivo desconocido?</div>
+                    <div class="faq-answer">
+                        <ol>
+                            <li>Verifica si es un dispositivo legítimo que olvidaste añadir</li>
+                            <li>Si es legítimo, añádelo usando la opción 14 (Configuración)</li>
+                            <li>Si es sospechoso, investiga la MAC y considera bloquearlo en tu router/firewall</li>
+                            <li>Revisa los logs para ver cuándo apareció por primera vez</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Cómo exporto todos los logs?</div>
+                    <div class="faq-answer">
+                        Usa la opción 13 (Gestión de Logs) → Exportar Logs. Esto creará un archivo 
+                        <code>logs_export_TIMESTAMP.tar.gz</code> con todos los logs comprimidos.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Puedo usar SIM-RED en una red corporativa grande?</div>
+                    <div class="faq-answer">
+                        SIM-RED está diseñado para redes pequeñas a medianas (hasta ~100 dispositivos). 
+                        Para redes más grandes, considera ajustar los intervalos de escaneo y usar filtros de subred.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ ¿Cómo actualizo el hash de integridad después de modificar hosts.conf?</div>
+                    <div class="faq-answer">
+                        Ejecuta la opción 8 (Verificar Integridad). Si detecta cambios, te preguntará si deseas 
+                        actualizar el hash. Responde "sí" si los cambios fueron intencionales.
+                    </div>
+                </div>
+                
+                <div class="alert alert-success">
+                    <strong>✅ ¿Más preguntas?</strong> Revisa los logs en <code>logs/</code> para más detalles 
+                    sobre el funcionamiento del sistema, o consulta la documentación en <code>GUIA_COMPLETA.md</code>.
+                </div>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer">
+            <p><strong>SIM-RED EXTENDIDO v1.0</strong></p>
+            <p>Sistema de Análisis y Seguridad de Red</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                Desarrollado con Bash, AWK y Perl<br>
+                Documentación generada el 04/12/2025 a las 09:54
+            </p>
+        </div>
+    </div>
+</body>
+</html>
